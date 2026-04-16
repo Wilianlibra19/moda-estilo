@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Moda & Estilos</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/framer-motion/10.16.4/framer-motion.umd.min.js"></script>
+  <style>
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #07070a;
+      color: #fff;
+      overflow-x: hidden;
+    }
+    .bg-fixed {
+      position: fixed;
+      inset: 0;
+      z-index: -10;
+      background:
+        radial-gradient(circle at top, rgba(255,255,255,0.08), transparent 25%),
+        radial-gradient(circle at bottom right, rgba(255,255,255,0.05), transparent 25%);
+    }
+    a { color: inherit; text-decoration: none; }
+    button, input, select, textarea { font: inherit; }
+    .container { width: min(1280px, calc(100% - 32px)); margin: 0 auto; }
+    .hidden { display: none !important; }
+    .muted { color: rgba(255,255,255,0.65); }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(24px);
+    }
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 0;
+      gap: 16px;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .brand-box {
+      width: 44px; height: 44px; border-radius: 18px;
+      background: #fff; color: #000; display: grid; place-items: center;
+      font-weight: 900;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.35);
+    }
+    .brand h1 { margin: 0; font-size: 18px; font-weight: 900; letter-spacing: .18em; }
+    .brand p { margin: 2px 0 0; font-size: 12px; color: rgba(255,255,255,.6); }
+    nav { display: flex; gap: 32px; }
+    nav a { font-size: 14px; color: rgba(255,255,255,0.8); }
+    nav a:hover { color: #fff; }
+    .actions { display: flex; align-items: center; gap: 12px; }
+    .icon-btn {
+      position: relative;
+      width: 48px; height: 48px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.05);
+      color: #fff;
+      cursor: pointer;
+    }
+    .icon-btn:hover { background: rgba(255,255,255,0.1); }
+    .badge {
+      position: absolute; top: -6px; right: -6px;
+      width: 24px; height: 24px; border-radius: 999px;
+      display: grid; place-items: center;
+      background: #fff; color: #000; font-size: 12px; font-weight: 800;
+    }
+    .menu-toggle { display: none; }
+    .mobile-menu {
+      display: none;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      background: rgba(0,0,0,0.95);
+    }
+    .mobile-menu.open { display: block; }
+    .mobile-menu a { display: block; padding: 14px 0; color: rgba(255,255,255,0.8); }
+
+    .hero {
+      position: relative;
+      min-height: 88vh;
+      overflow: hidden;
+    }
+    .hero-slide {
+      position: absolute; inset: 0;
+      opacity: 0; transition: opacity .8s ease, transform .8s ease;
+      transform: scale(1.03);
+    }
+    .hero-slide.active { opacity: 1; transform: scale(1); }
+    .hero-slide img { width: 100%; height: 100%; object-fit: cover; }
+    .hero-slide::after {
+      content: ""; position: absolute; inset: 0;
+      background: linear-gradient(90deg, rgba(0,0,0,.92) 0%, rgba(0,0,0,.7) 40%, rgba(0,0,0,.5) 100%);
+    }
+    .hero-slide::before {
+      content: ""; position: absolute; inset: 0;
+      background: radial-gradient(circle at top right, rgba(255,255,255,.12), transparent 20%);
+      z-index: 1;
+    }
+    .hero-content {
+      position: relative; z-index: 2;
+      min-height: 88vh;
+      display: grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap: 40px;
+      align-items: center;
+      padding: 40px 0 72px;
+    }
+    .pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.1);
+      font-size: 12px; letter-spacing: .3em; text-transform: uppercase;
+      color: rgba(255,255,255,.8);
+      backdrop-filter: blur(16px);
+    }
+    .hero-title {
+      margin: 18px 0 0;
+      max-width: 760px;
+      font-size: clamp(48px, 7vw, 112px);
+      line-height: 1.02;
+      font-weight: 900;
+    }
+    .hero-desc {
+      margin-top: 24px;
+      max-width: 560px;
+      color: rgba(255,255,255,.75);
+      line-height: 1.8;
+      font-size: 18px;
+    }
+    .cta-row { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 32px; }
+    .btn-primary, .btn-secondary {
+      padding: 14px 24px; border-radius: 18px; font-weight: 700; cursor: pointer; border: 0;
+    }
+    .btn-primary { background: #fff; color: #000; }
+    .btn-secondary { background: rgba(255,255,255,.1); color: #fff; border: 1px solid rgba(255,255,255,.15); }
+    .stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-top: 40px; max-width: 720px; }
+    .stat-box {
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 28px;
+      background: rgba(255,255,255,0.1);
+      padding: 18px;
+      backdrop-filter: blur(18px);
+    }
+    .stat-box strong { display: block; font-size: 32px; font-weight: 900; }
+    .stat-box span { display: block; margin-top: 4px; color: rgba(255,255,255,.65); font-size: 14px; }
+    .hero-side { display: grid; gap: 16px; grid-template-columns: repeat(2,1fr); }
+    .glass-card {
+      border-radius: 32px; overflow: hidden;
+      border: 1px solid rgba(255,255,255,.1);
+      background: rgba(255,255,255,.1);
+      backdrop-filter: blur(24px);
+      box-shadow: 0 24px 70px rgba(0,0,0,.35);
+    }
+    .glass-card.big { grid-column: 1 / -1; padding: 24px; }
+    .glass-card.big h3 { margin: 10px 0 0; font-size: 36px; font-weight: 900; }
+    .glass-card.big p { margin-top: 16px; color: rgba(255,255,255,.72); line-height: 1.8; }
+    .mini-product img { width: 100%; height: 224px; object-fit: cover; display: block; }
+    .mini-product .caption { padding: 16px; }
+    .mini-product .caption p { margin: 0; color: rgba(255,255,255,.65); font-size: 14px; }
+    .mini-product .caption h4 { margin: 6px 0 0; font-size: 24px; font-weight: 900; }
+
+    .hero-dots {
+      position: relative; z-index: 2;
+      display: flex; justify-content: center; align-items: center; gap: 12px;
+      margin-top: -28px; padding-bottom: 32px;
+    }
+    .hero-dots button {
+      border-radius: 999px; border: 1px solid rgba(255,255,255,.15);
+      background: rgba(0,0,0,.4); color: #fff; cursor: pointer;
+      backdrop-filter: blur(16px);
+    }
+    .hero-arrow { width: 44px; height: 44px; }
+    .hero-dot { width: 28px; height: 10px; border: 0; background: rgba(255,255,255,.3) !important; }
+    .hero-dot.active { width: 48px; background: #fff !important; }
+
+    .marquee {
+      border-top: 1px solid rgba(255,255,255,0.1);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.05);
+      overflow: hidden;
+      backdrop-filter: blur(8px);
+      padding: 16px 0;
+    }
+    .marquee-track {
+      display: flex; gap: 40px; white-space: nowrap; width: max-content;
+      animation: marquee 20s linear infinite;
+      font-size: 12px; font-weight: 700; letter-spacing: .28em; color: rgba(255,255,255,.6);
+    }
+    @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+    section { padding: 80px 0; }
+    .section-label { color: rgba(255,255,255,.5); font-size: 12px; letter-spacing: .25em; text-transform: uppercase; }
+    .section-title { margin: 8px 0 0; font-size: clamp(34px, 5vw, 56px); font-weight: 900; }
+    .section-desc { margin-top: 12px; max-width: 760px; color: rgba(255,255,255,.65); line-height: 1.85; }
+
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 32px; }
+    .card {
+      border-radius: 32px;
+      border: 1px solid rgba(255,255,255,.1);
+      background: rgba(255,255,255,.05);
+      padding: 32px;
+    }
+    .card-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 16px; }
+    .feature {
+      border-radius: 28px;
+      border: 1px solid rgba(255,255,255,.1);
+      background: rgba(255,255,255,.05);
+      padding: 24px;
+    }
+    .feature .icon { font-size: 28px; }
+    .feature h3 { margin: 14px 0 0; font-size: 22px; }
+    .feature p { margin-top: 10px; color: rgba(255,255,255,.65); line-height: 1.7; font-size: 14px; }
+
+    .promo-grid { display: grid; grid-template-columns: 1.2fr .8fr; gap: 24px; }
+    .promo-box {
+      border-radius: 32px;
+      border: 1px solid rgba(255,255,255,.1);
+      background: linear-gradient(to right, rgba(255,255,255,.1), rgba(255,255,255,.05));
+      padding: 32px;
+    }
+    .promo-tags { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 24px; }
+    .promo-tag { padding: 10px 16px; border-radius: 999px; font-size: 14px; }
+    .promo-tag.white { background: #fff; color: #000; font-weight: 700; }
+    .promo-tag.soft { border: 1px solid rgba(255,255,255,.1); background: rgba(255,255,255,.05); color: rgba(255,255,255,.8); }
+    .sell-list { display: grid; gap: 16px; margin-top: 20px; }
+    .sell-item {
+      display: flex; align-items: center; gap: 14px;
+      border-radius: 24px; background: rgba(0,0,0,.2); padding: 14px;
+    }
+    .sell-item img { width: 64px; height: 64px; border-radius: 18px; object-fit: cover; }
+    .sell-item .grow { flex: 1; min-width: 0; }
+    .sell-item strong { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .sell-item span { font-size: 14px; color: rgba(255,255,255,.55); }
+
+    .filters-top { display: flex; flex-direction: column; gap: 20px; margin-bottom: 24px; }
+    .filters-line {
+      display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; flex-wrap: wrap;
+    }
+    .controls { display: grid; grid-template-columns: repeat(2,minmax(220px,1fr)); gap: 12px; min-width: 460px; }
+    .control {
+      display: flex; align-items: center; gap: 10px;
+      border-radius: 20px; border: 1px solid rgba(255,255,255,.1); background: rgba(255,255,255,.05);
+      padding: 14px 16px;
+    }
+    .control input, .control select {
+      flex: 1; background: transparent; border: 0; color: #fff; outline: none;
+    }
+    .control option { background: #111; }
+    .category-row { display: flex; gap: 12px; flex-wrap: wrap; }
+    .chip {
+      border-radius: 999px; padding: 10px 16px; font-size: 14px; cursor: pointer;
+      background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.15); color: rgba(255,255,255,.7);
+    }
+    .chip.active { background: #fff; color: #000; }
+    .info-row {
+      margin-bottom: 32px;
+      border-radius: 32px; border: 1px solid rgba(255,255,255,.1); background: rgba(255,255,255,.05); padding: 22px;
+      display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap;
+      color: rgba(255,255,255,.7);
+    }
+    .products-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; }
+    .product-card {
+      position: relative; overflow: hidden;
+      border-radius: 32px; border: 1px solid rgba(255,255,255,.1); background: rgba(255,255,255,.04);
+      box-shadow: 0 20px 60px rgba(0,0,0,.35);
+    }
+    .product-image-wrap { position: relative; overflow: hidden; }
+    .product-image-wrap img { width: 100%; height: 320px; object-fit: cover; display: block; transition: transform .7s; }
+    .product-card:hover .product-image-wrap img { transform: scale(1.1); }
+    .product-image-wrap::after {
+      content: ""; position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,.7), rgba(0,0,0,.1), transparent);
+    }
+    .tag-row { position: absolute; top: 16px; left: 16px; display: flex; gap: 8px; z-index: 1; }
+    .tag-row span {
+      border-radius: 999px; padding: 6px 12px; font-size: 12px; font-weight: 800;
+      background: #fff; color: #000;
+    }
+    .tag-row .discount { background: #ef4444; color: #fff; }
+    .fav-btn {
+      position: absolute; top: 16px; right: 16px; z-index: 1;
+      width: 42px; height: 42px; border-radius: 999px; cursor: pointer;
+      border: 1px solid rgba(255,255,255,.2); background: rgba(0,0,0,.4); color: #fff;
+      backdrop-filter: blur(16px);
+    }
+    .fav-btn.active { background: rgba(255,255,255,.95); color: #000; }
+    .product-overlay {
+      position: absolute; left: 16px; right: 16px; bottom: 16px; z-index: 1;
+      display: flex; justify-content: space-between; align-items: flex-end; gap: 16px;
+    }
+    .product-overlay p { margin: 0; font-size: 12px; letter-spacing: .25em; text-transform: uppercase; color: rgba(255,255,255,.6); }
+    .product-overlay h3 { margin: 8px 0 0; font-size: 32px; line-height: 1.1; }
+    .product-price-box { text-align: right; }
+    .product-price-box del { display: block; font-size: 12px; color: rgba(255,255,255,.5); }
+    .product-price-box strong { display: block; font-size: 32px; font-weight: 900; }
+    .product-body { padding: 24px; }
+    .product-meta { display: flex; justify-content: space-between; gap: 12px; color: rgba(255,255,255,.7); font-size: 14px; }
+    .product-desc { margin-top: 14px; color: rgba(255,255,255,.65); line-height: 1.75; font-size: 14px; }
+    .size-box {
+      margin-top: 18px; border-radius: 24px; border: 1px solid rgba(255,255,255,.1); background: rgba(0,0,0,.2); padding: 18px;
+    }
+    .size-box h4 { margin: 0 0 14px; font-size: 14px; color: rgba(255,255,255,.8); }
+    .sizes { display: flex; gap: 10px; flex-wrap: wrap; }
+    .size {
+      border-radius: 14px; padding: 10px 14px; border: 1px solid rgba(255,255,255,.15); cursor: pointer;
+      background: rgba(255,255,255,.05); color: #fff; font-weight: 700;
+    }
+    .size.ok { border-color: rgba(16,185,129,.4); background: rgba(16,185,129,.1); color: #bbf7d0; }
+    .size.low { border-color: rgba(245,158,11,.4); background: rgba(245,158,11,.1); color: #fde68a; }
+    .size.out { border-color: rgba(239,68,68,.4); background: rgba(239,68,68,.1); color: #fecaca; opacity: .6; }
+    .size.active { border-color: #fff; background: #fff; color: #000; }
+    .stock-label { margin-top: 12px; color: rgba(255,255,255,.6); font-size: 14px; }
+    .styles { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+    .styles span {
+      border-radius: 999px; border: 1px solid rgba(255,255,255,.1); background: rgba(255,255,255,.05); padding: 7px 12px; font-size: 12px; color: rgba(255,255,255,.7);
+    }
+    .product-actions { display: flex; gap: 12px; margin-top: 24px; }
+    .view-btn {
+      padding: 14px 18px; border-radius: 18px; border: 1px solid rgba(255,255,255,.15); background: rgba(255,255,255,.05); color: rgba(255,255,255,.85); cursor: pointer;
+    }
+
+    .extra-grid, .testimonial-grid, .benefits-grid, .process-grid, .contact-grid { display: grid; gap: 24px; }
+    .extra-grid { grid-template-columns: 1.05fr .95fr; margin-top: 40px; }
+    .testimonial-grid { grid-template-columns: repeat(3,1fr); margin-top: 40px; }
+    .benefits-grid { grid-template-columns: repeat(3,1fr); }
+    .process-grid { grid-template-columns: repeat(4,1fr); margin-top: 40px; }
+    .contact-grid { grid-template-columns: 1fr 1fr; margin-top: 40px; }
+    .step-box, .testimonial, .contact-box, .footer-col, .newsletter, .benefit-box { border-radius: 32px; border: 1px solid rgba(255,255,255,.1); background: rgba(255,255,255,.05); }
+    .newsletter, .benefit-box, .testimonial, .step-box, .contact-box { padding: 32px; }
+    .newsletter-input { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 24px; }
+    .newsletter-input input {
+      flex: 1; min-width: 200px; border-radius: 18px; border: 1px solid rgba(255,255,255,.1); background: rgba(0,0,0,.2); color: #fff; padding: 14px 16px; outline: none;
+    }
+    .testimonial .stars { color: #fde047; letter-spacing: .2em; font-size: 14px; }
+    .testimonial p { color: rgba(255,255,255,.7); line-height: 1.8; }
+    .person { display: flex; align-items: center; gap: 12px; margin-top: 20px; }
+    .person img { width: 44px; height: 44px; border-radius: 999px; object-fit: cover; }
+    .step-circle {
+      width: 56px; height: 56px; border-radius: 999px; background: #fff; color: #000; display: grid; place-items: center; margin: 0 auto 18px; font-weight: 900;
+    }
+    .step-box { text-align: center; }
+    .contact-item {
+      display: flex; align-items: center; gap: 14px; margin-top: 16px;
+      border-radius: 20px; border: 1px solid rgba(255,255,255,.1); background: rgba(0,0,0,.2); padding: 16px;
+    }
+    .contact-form .row { display: grid; grid-template-columns: repeat(2,1fr); gap: 16px; }
+    .contact-form input, .contact-form textarea {
+      width: 100%; margin-top: 16px; border-radius: 18px; border: 1px solid rgba(255,255,255,.1); background: rgba(0,0,0,.2); color: #fff; padding: 14px 16px; outline: none;
+    }
+    .contact-form textarea { min-height: 160px; resize: vertical; }
+
+    footer { border-top: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,.6); }
+    .footer-grid {
+      display: grid; grid-template-columns: repeat(4,1fr); gap: 40px; padding: 48px 0;
+    }
+    .footer-col h4 { margin: 0; font-size: 18px; }
+    .footer-col p, .footer-col a { color: rgba(255,255,255,.6); line-height: 1.9; font-size: 14px; }
+    .socials { display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap; }
+    .socials button {
+      border-radius: 999px; border: 1px solid rgba(255,255,255,.1); background: rgba(255,255,255,.05); color: rgba(255,255,255,.8); padding: 12px 16px; cursor: pointer;
+    }
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,.1); padding: 24px 0; color: rgba(255,255,255,.45); font-size: 14px;
+      display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+    }
+
+    .overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,.6); z-index: 60; display: none;
+    }
+    .overlay.show { display: block; }
+
+    .cart-drawer {
+      position: fixed; top: 0; right: 0; height: 100vh; width: min(420px, 100%);
+      border-left: 1px solid rgba(255,255,255,.1);
+      background: #0d0d10; z-index: 70;
+      transform: translateX(100%); transition: transform .35s ease;
+      display: flex; flex-direction: column;
+      box-shadow: -20px 0 50px rgba(0,0,0,.35);
+    }
+    .cart-drawer.open { transform: translateX(0); }
+    .drawer-head, .drawer-foot { padding: 20px; border-bottom: 1px solid rgba(255,255,255,.1); }
+    .drawer-foot { border-bottom: 0; border-top: 1px solid rgba(255,255,255,.1); }
+    .drawer-head-row { display: flex; justify-content: space-between; gap: 16px; align-items: center; }
+    .drawer-scroll { flex: 1; overflow: auto; padding: 20px; display: grid; gap: 16px; }
+    .empty-cart {
+      border-radius: 32px; border: 1px dashed rgba(255,255,255,.15); background: rgba(255,255,255,.05); padding: 40px 20px; text-align: center;
+    }
+    .cart-item {
+      border-radius: 24px; border: 1px solid rgba(255,255,255,.1); background: rgba(255,255,255,.05); padding: 16px; display: flex; gap: 14px;
+    }
+    .cart-item img { width: 80px; height: 96px; object-fit: cover; border-radius: 18px; }
+    .cart-main { flex: 1; min-width: 0; }
+    .cart-top { display: flex; justify-content: space-between; gap: 12px; }
+    .cart-top h4 { margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .qty-wrap {
+      display: flex; align-items: center; gap: 8px; border-radius: 999px; border: 1px solid rgba(255,255,255,.1); background: rgba(0,0,0,.3); padding: 4px 8px;
+    }
+    .qty-wrap button { border: 0; background: transparent; color: #fff; cursor: pointer; width: 24px; height: 24px; }
+    .summary-box, .payment-box {
+      border-radius: 24px; border: 1px solid rgba(255,255,255,.1); background: rgba(0,0,0,.2); padding: 16px;
+    }
+    .summary-box pre { white-space: pre-wrap; margin: 0; color: rgba(255,255,255,.8); font-family: inherit; font-size: 14px; line-height: 1.7; }
+
+    .modal {
+      position: fixed; left: 50%; top: 50%; transform: translate(-50%,-50%);
+      z-index: 80; width: min(92vw, 960px); max-height: 92vh; overflow: auto;
+      border-radius: 32px; border: 1px solid rgba(255,255,255,.1); background: #0d0d10; display: none;
+      box-shadow: 0 24px 80px rgba(0,0,0,.4);
+    }
+    .modal.show { display: block; }
+    .modal-content { padding: 24px; }
+    .checkout-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: 24px; }
+    .checkout-grid input {
+      width: 100%; border-radius: 18px; border: 1px solid rgba(255,255,255,.1); background: rgba(0,0,0,.2); color: #fff; padding: 14px 16px; outline: none; margin-top: 14px;
+    }
+    .payment-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 12px; margin-top: 18px; }
+    .payment-option {
+      border-radius: 24px; border: 1px solid rgba(255,255,255,.1); background: rgba(255,255,255,.05); padding: 16px; cursor: pointer;
+    }
+    .payment-option.active { background: #fff; color: #000; border-color: #fff; }
+    .payment-option small { display: block; margin-top: 6px; color: inherit; opacity: .7; line-height: 1.5; }
+    .checkout-summary { border-radius: 28px; border: 1px solid rgba(255,255,255,.1); background: rgba(255,255,255,.05); padding: 20px; }
+
+    .product-modal-grid { display: grid; grid-template-columns: 1fr .95fr; }
+    .gallery-main { padding: 24px; }
+    .gallery-main img { width: 100%; height: 420px; object-fit: cover; border-radius: 32px; border: 1px solid rgba(255,255,255,.1); }
+    .gallery-thumbs { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-top: 16px; }
+    .gallery-thumbs button { padding: 0; background: transparent; border-radius: 18px; border: 1px solid rgba(255,255,255,.1); overflow: hidden; cursor: pointer; }
+    .gallery-thumbs button.active { border-color: #fff; }
+    .gallery-thumbs img { width: 100%; height: 96px; object-fit: cover; display: block; }
+    .product-modal-side { padding: 24px 24px 24px 0; }
+    .meta-split { display: grid; grid-template-columns: repeat(2,1fr); gap: 12px; margin-top: 20px; }
+    .meta-split .box { border-radius: 24px; border: 1px solid rgba(255,255,255,.1); background: rgba(255,255,255,.05); padding: 16px; }
+
+    .ai-widget {
+      position: fixed; right: 20px; bottom: 20px; z-index: 90;
+      display: flex; flex-direction: column; align-items: flex-end; gap: 12px;
+    }
+    .ai-panel {
+      width: min(92vw, 380px);
+      border-radius: 32px; overflow: hidden;
+      border: 1px solid rgba(255,255,255,.1); background: #0d0d10;
+      box-shadow: 0 24px 80px rgba(0,0,0,.4);
+    }
+    .ai-head, .ai-foot { padding: 16px; border-bottom: 1px solid rgba(255,255,255,.1); }
+    .ai-foot { border-bottom: 0; }
+    .ai-body { max-height: 340px; overflow: auto; padding: 16px; display: grid; gap: 12px; }
+    .msg { display: flex; }
+    .msg.user { justify-content: flex-end; }
+    .bubble {
+      max-width: 85%; border-radius: 22px; padding: 14px 16px; font-size: 14px; line-height: 1.7;
+    }
+    .msg.user .bubble { background: #fff; color: #000; }
+    .msg.bot .bubble { background: rgba(255,255,255,.05); color: #fff; border: 1px solid rgba(255,255,255,.1); }
+    .quick-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+    .quick-row button {
+      border-radius: 999px; border: 1px solid rgba(255,255,255,.1); background: rgba(255,255,255,.05); color: rgba(255,255,255,.8); padding: 10px 12px; font-size: 12px; cursor: pointer;
+    }
+    .prompt-help {
+      border-radius: 20px; border: 1px solid rgba(255,255,255,.1); background: rgba(0,0,0,.2); color: rgba(255,255,255,.55); padding: 12px; font-size: 12px; line-height: 1.6; margin-bottom: 12px;
+    }
+    .ai-send { display: flex; gap: 8px; }
+    .ai-send input {
+      flex: 1; border-radius: 18px; border: 1px solid rgba(255,255,255,.1); background: rgba(0,0,0,.2); color: #fff; outline: none; padding: 14px 16px;
+    }
+    .ai-fab {
+      border-radius: 999px; border: 0; background: #fff; color: #000; padding: 14px 18px; font-weight: 700; cursor: pointer;
+      box-shadow: 0 24px 70px rgba(0,0,0,.35);
+    }
+
+    @media (max-width: 1100px) {
+      nav { display: none; }
+      .menu-toggle { display: inline-grid; place-items: center; }
+      .hero-content, .promo-grid, .about-grid, .extra-grid, .contact-grid, .checkout-grid, .product-modal-grid { grid-template-columns: 1fr; }
+      .hero-side, .testimonial-grid, .benefits-grid, .footer-grid { grid-template-columns: repeat(2,1fr); }
+      .products-grid, .process-grid { grid-template-columns: repeat(2,1fr); }
+      .controls { min-width: 100%; width: 100%; }
+      .product-modal-side { padding: 0 24px 24px; }
+      .gallery-main img { height: 320px; }
+    }
+    @media (max-width: 700px) {
+      .stats, .hero-side, .testimonial-grid, .benefits-grid, .process-grid, .footer-grid, .products-grid, .payment-grid, .contact-form .row { grid-template-columns: 1fr; }
+      .controls { grid-template-columns: 1fr; }
+      .filters-line { align-items: stretch; }
+      .hero-title { font-size: 46px; }
+      .hero-overlay h3, .product-overlay h3 { font-size: 24px; }
+      .section-title { font-size: 34px; }
+      .container { width: min(1280px, calc(100% - 20px)); }
+      .product-image-wrap img { height: 260px; }
+      .hero-content { padding-top: 24px; }
+      .glass-card.big h3 { font-size: 28px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-fixed"></div>
+  <div class="overlay" id="overlay"></div>
+
+  <header>
+    <div class="container topbar">
+      <div class="brand">
+        <div class="brand-box">ME</div>
+        <div>
+          <h1>Moda & Estilos</h1>
+          <p>Tienda moderna con compra asistida por IA</p>
+        </div>
+      </div>
+
+      <nav>
+        <a href="#inicio">Inicio</a>
+        <a href="#nosotros">Sobre nosotros</a>
+        <a href="#coleccion">Prendas</a>
+        <a href="#promos">Promos</a>
+        <a href="#beneficios">Beneficios</a>
+        <a href="#proceso">Proceso</a>
+        <a href="#contacto">Contáctenos</a>
+      </nav>
+
+      <div class="actions">
+        <button class="icon-btn" id="openCartBtn">👜<span class="badge hidden" id="cartBadge">0</span></button>
+        <button class="icon-btn menu-toggle" id="menuBtn">☰</button>
+      </div>
+    </div>
+    <div class="mobile-menu" id="mobileMenu">
+      <div class="container">
+        <a href="#inicio">Inicio</a>
+        <a href="#nosotros">Sobre nosotros</a>
+        <a href="#coleccion">Prendas</a>
+        <a href="#promos">Promos</a>
+        <a href="#beneficios">Beneficios</a>
+        <a href="#proceso">Proceso</a>
+        <a href="#contacto">Contáctenos</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="inicio">
+      <div id="heroSlides"></div>
+
+      <div class="container hero-content">
+        <div>
+          <div class="pill">⚡ Nueva temporada 2026</div>
+          <h2 class="hero-title" id="heroTitle"></h2>
+          <p class="hero-desc" id="heroSubtitle"></p>
+
+          <div class="cta-row">
+            <a class="btn-primary" href="#coleccion">Ver colección</a>
+            <button class="btn-secondary" id="openAiBtn">Probar chat IA</button>
+          </div>
+
+          <div class="stats">
+            <div class="stat-box"><strong>+500</strong><span>Clientes atendidos</span></div>
+            <div class="stat-box"><strong>24h</strong><span>Despacho rápido</span></div>
+            <div class="stat-box"><strong>IA</strong><span>Asistencia automática</span></div>
+          </div>
+        </div>
+
+        <div class="hero-side">
+          <div class="glass-card big">
+            <div class="muted" style="text-transform:uppercase;letter-spacing:.25em;font-size:12px;">Experiencia mejorada</div>
+            <h3>Más moderna, más visual, más completa</h3>
+            <p>Ahora la web tiene hero animado, buscador, filtros, promociones, mejor carrito, galería de producto, tallas, stock, método de pago guiado y chatbot con respuestas por prompt usando metadata.</p>
+          </div>
+          <div class="glass-card mini-product">
+            <img src="https://images.unsplash.com/photo-1523398002811-999ca8dec234?auto=format&fit=crop&w=1200&q=80" alt="featured 1">
+            <div class="caption"><p>Chaquetas</p><h4>Chaqueta Urban Black</h4></div>
+          </div>
+          <div class="glass-card mini-product">
+            <img src="https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&w=1200&q=80" alt="featured 2">
+            <div class="caption"><p>Jeans</p><h4>Jean Slim Fit Blue</h4></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-dots">
+        <button class="hero-arrow" id="heroPrev">←</button>
+        <div id="heroIndicators" style="display:flex;gap:12px;"></div>
+        <button class="hero-arrow" id="heroNext">→</button>
+      </div>
+    </section>
+
+    <section class="marquee">
+      <div class="marquee-track" id="marqueeTrack"></div>
+    </section>
+
+    <section id="nosotros">
+      <div class="container">
+        <div class="section-label">Sobre nosotros</div>
+        <h2 class="section-title">Creamos ropa que se siente actual, fuerte y auténtica.</h2>
+        <p class="section-desc">Somos una marca enfocada en ofrecer prendas modernas con presencia visual, acabados premium y una experiencia de compra digital atractiva. La tienda está pensada para vender mejor y responder consultas con automatización inteligente.</p>
+
+        <div class="about-grid">
+          <div class="card">
+            <div class="section-label">Sobre nosotros</div>
+            <h3 style="font-size:40px;margin:0;line-height:1.15;">Creamos ropa que se siente actual, fuerte y auténtica.</h3>
+            <p class="section-desc" style="max-width:none;">Somos una marca enfocada en ofrecer prendas modernas con presencia visual, acabados premium y una experiencia de compra digital atractiva.</p>
+            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:24px;">
+              <div class="feature"><div class="muted">Materiales</div><h3 style="margin-top:8px;">Premium y modernos</h3></div>
+              <div class="feature"><div class="muted">Atención</div><h3 style="margin-top:8px;">Rápida y guiada</h3></div>
+            </div>
+          </div>
+          <div class="card-grid">
+            <div class="feature"><div class="icon">⭐</div><h3>Diseño premium</h3><p>Visual moderno y elegante para ropa urbana y fashion store.</p></div>
+            <div class="feature"><div class="icon">🚚</div><h3>Envíos rápidos</h3><p>Preparado para mostrar envíos a todo Perú.</p></div>
+            <div class="feature"><div class="icon">🛡️</div><h3>Compra segura</h3><p>Base lista para crecer a una tienda real.</p></div>
+            <div class="feature"><div class="icon">🎧</div><h3>Atención directa</h3><p>Lista para conectar WhatsApp o soporte personalizado.</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="promos">
+      <div class="container promo-grid">
+        <div class="promo-box">
+          <div class="section-label">Promociones activas</div>
+          <h2 class="section-title">Descuentos que empujan la compra</h2>
+          <p class="section-desc" style="max-width:680px;">Agregamos una zona de promociones para que la web se vea más extensa y más comercial. Puedes reemplazar estos bloques por campañas reales, combos, lanzamientos o liquidaciones.</p>
+          <div class="promo-tags">
+            <span class="promo-tag white">2x1 en accesorios</span>
+            <span class="promo-tag soft">-20% en chaquetas</span>
+            <span class="promo-tag soft">Envío gratis desde S/ 199</span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="section-label">Más vendidos</div>
+          <div class="sell-list" id="topSellers"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="coleccion">
+      <div class="container">
+        <div class="filters-top">
+          <div class="filters-line">
+            <div>
+              <div class="section-label">Catálogo</div>
+              <h2 class="section-title">Nuestras prendas destacadas</h2>
+              <p class="section-desc">Busca por nombre, color, estilo o material. El catálogo ahora es más visual, más comercial y con más controles.</p>
+            </div>
+            <div class="controls">
+              <div class="control"><span>🔎</span><input id="searchInput" placeholder="Buscar por jean, beige, elegante..." /></div>
+              <div class="control"><span>⚙️</span><select id="sortSelect"></select></div>
+            </div>
+          </div>
+          <div class="category-row" id="categoryRow"></div>
+        </div>
+
+        <div class="info-row">
+          <div>🕒 Mostrando <strong id="productCount">0</strong> producto(s)</div>
+          <div>🤖 Catálogo preparado para consultas por prompt y metadata</div>
+        </div>
+
+        <div class="products-grid" id="productsGrid"></div>
+
+        <div class="extra-grid">
+          <div class="newsletter">
+            <div class="section-label">Oferta limitada</div>
+            <h3 style="font-size:48px;margin:14px 0 0;line-height:1.1;">Nuevas llegadas cada semana</h3>
+            <p class="section-desc" style="max-width:680px;">Esta parte viene de tu diseño y la adapté a la versión HTML: sirve para campañas, captación de leads y empujar nuevas colecciones sin tocar el fondo actual.</p>
+            <div class="newsletter-input">
+              <input placeholder="tu@email.com" />
+              <button class="btn-primary">Suscribirme</button>
+            </div>
+          </div>
+          <div class="benefit-box">
+            <div class="section-label">Beneficios extra</div>
+            <div style="display:grid;gap:16px;margin-top:20px;">
+              <div class="payment-box"><strong>Envío gratis</strong><div class="muted" style="margin-top:6px;">Disponible desde compras mayores a S/ 199.</div></div>
+              <div class="payment-box"><strong>Cambio de talla</strong><div class="muted" style="margin-top:6px;">Soporte rápido si necesitas ajuste por talla.</div></div>
+              <div class="payment-box"><strong>Atención directa</strong><div class="muted" style="margin-top:6px;">WhatsApp y chat IA para resolver dudas antes de pagar.</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-grid" id="testimonialGrid"></div>
+      </div>
+    </section>
+
+    <section id="beneficios" style="background:linear-gradient(to right, rgba(255,255,255,.1), rgba(255,255,255,.05));border-top:1px solid rgba(255,255,255,.1);border-bottom:1px solid rgba(255,255,255,.1);">
+      <div class="container benefits-grid">
+        <div class="benefit-box">
+          <h3 style="font-size:34px;margin:0;">¿Por qué comprar con nosotros?</h3>
+          <p class="section-desc" style="max-width:none;">Una experiencia visual premium, prendas seleccionadas, guía de pago, carrito mejorado y un asistente virtual para resolver dudas antes de comprar.</p>
+        </div>
+        <div class="benefit-box"><div style="font-size:30px;">🚚</div><h3>Envíos a nivel nacional</h3><p class="section-desc" style="max-width:none;">Entrega rápida y seguimiento preparado para futuras integraciones.</p></div>
+        <div class="benefit-box"><div style="font-size:30px;">🛡️</div><h3>Compra simple y confiable</h3><p class="section-desc" style="max-width:none;">Carrito dinámico, selección de talla y resumen de compra claro.</p></div>
+      </div>
+    </section>
+
+    <section id="proceso">
+      <div class="container">
+        <div class="section-label">Proceso</div>
+        <h2 class="section-title">Cómo compra tu cliente</h2>
+        <p class="section-desc">También saqué esta parte de tu diseño y la adapté para que la web se vea más completa y más profesional.</p>
+        <div class="process-grid" id="processGrid"></div>
+      </div>
+    </section>
+
+    <section id="contacto">
+      <div class="container contact-grid">
+        <div class="contact-box">
+          <div class="section-label">Contáctenos</div>
+          <h2 class="section-title">Estamos listos para ayudarte.</h2>
+          <p class="section-desc" style="max-width:none;">Puedes usar esta sección para que tus clientes te escriban, consulten tallas, pidan stock o confirmen compras por WhatsApp, Instagram o correo.</p>
+          <div class="contact-item">📞 <span>+51 999 999 999</span></div>
+          <div class="contact-item">✉️ <span>ventas@modayestilos.com</span></div>
+          <div class="contact-item">📍 <span>Lima, Perú</span></div>
+        </div>
+        <div class="contact-box contact-form">
+          <h3 style="margin:0;font-size:32px;">Envíanos un mensaje</h3>
+          <div class="row">
+            <input placeholder="Nombres" />
+            <input placeholder="Apellidos" />
+          </div>
+          <input placeholder="Correo electrónico" />
+          <input placeholder="Asunto" />
+          <textarea placeholder="Escribe tu mensaje aquí..."></textarea>
+          <button class="btn-primary" style="margin-top:16px;">Enviar mensaje</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h4 style="font-size:22px;letter-spacing:.18em;">Moda & Estilos</h4>
+          <p style="margin-top:14px;">Moda urbana premium pensada para destacar. Calidad, diseño y experiencia de compra en un solo lugar.</p>
+          <div class="socials">
+            <button>IG</button><button>FB</button><button>TK</button><button>WA</button>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Tienda</h4>
+          <a href="#coleccion">Catálogo</a>
+          <a href="#coleccion">Novedades</a>
+          <a href="#promos">Más vendidos</a>
+          <a href="#promos">Ofertas</a>
+        </div>
+        <div class="footer-col">
+          <h4>Información</h4>
+          <a href="#nosotros">Sobre nosotros</a>
+          <a href="#proceso">Cómo comprar</a>
+          <a href="#beneficios">Beneficios</a>
+          <a href="#contacto">Contacto</a>
+        </div>
+        <div class="footer-col">
+          <h4>Ayuda</h4>
+          <a href="#">Política de envíos</a>
+          <a href="#">Cambios y devoluciones</a>
+          <a href="#">Guía de tallas</a>
+          <a href="#">Preguntas frecuentes</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 Moda & Estilos. Todos los derechos reservados.</span>
+        <span>Hecho con ❤️ en Lima, Perú</span>
+      </div>
+    </div>
+  </footer>
+
+  <aside class="cart-drawer" id="cartDrawer">
+    <div class="drawer-head">
+      <div class="drawer-head-row">
+        <div>
+          <h3 style="margin:0;font-size:32px;">Tu carrito</h3>
+          <p class="muted" id="cartCountText" style="margin:6px 0 0;">0 producto(s) agregados</p>
+        </div>
+        <button class="icon-btn" id="closeCartBtn">✕</button>
+      </div>
+    </div>
+    <div class="drawer-scroll" id="cartItems"></div>
+    <div class="drawer-foot">
+      <div style="display:grid;gap:8px;color:rgba(255,255,255,.7);font-size:14px;">
+        <div style="display:flex;justify-content:space-between;"><span>Subtotal</span><span id="subtotalText">S/ 0</span></div>
+        <div style="display:flex;justify-content:space-between;"><span>Envío</span><span id="shippingText">S/ 0</span></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-top:16px;font-size:28px;font-weight:900;"><span>Total</span><span id="totalText">S/ 0</span></div>
+      <button class="btn-primary" style="width:100%;margin-top:20px;" id="checkoutBtn">Finalizar compra</button>
+    </div>
+  </aside>
+
+  <div class="modal" id="checkoutModal">
+    <div class="modal-content">
+      <div class="drawer-head-row">
+        <div>
+          <h3 style="margin:0;font-size:32px;">Finalizar compra</h3>
+          <p class="muted" style="margin:6px 0 0;">Completa tus datos y elige cómo deseas pagar.</p>
+        </div>
+        <button class="icon-btn" id="closeCheckoutBtn">✕</button>
+      </div>
+      <div class="checkout-grid" style="margin-top:20px;">
+        <div>
+          <input id="customerName" placeholder="Nombre completo" />
+          <input id="customerPhone" placeholder="Celular" />
+          <input id="customerAddress" placeholder="Dirección de entrega" />
+          <div style="margin-top:20px;">
+            <div class="muted" style="font-weight:700;">Selecciona método de pago</div>
+            <div class="payment-grid" id="paymentGrid"></div>
+          </div>
+        </div>
+        <div class="checkout-summary">
+          <h4 style="margin:0;font-size:24px;">Resumen del pedido</h4>
+          <div id="checkoutSummaryItems" style="display:grid;gap:12px;margin-top:16px;max-height:320px;overflow:auto;"></div>
+          <div style="display:grid;gap:8px;margin-top:18px;color:rgba(255,255,255,.7);font-size:14px;">
+            <div style="display:flex;justify-content:space-between;"><span>Subtotal</span><span id="checkoutSubtotal">S/ 0</span></div>
+            <div style="display:flex;justify-content:space-between;"><span>Envío</span><span id="checkoutShipping">S/ 0</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:20px;font-weight:900;color:#fff;"><span>Total</span><span id="checkoutTotal">S/ 0</span></div>
+          </div>
+          <button class="btn-primary" style="width:100%;margin-top:20px;" id="confirmOrderBtn">Confirmar pedido</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="productModal">
+    <div class="product-modal-grid">
+      <div class="gallery-main">
+        <img id="modalMainImage" alt="producto" />
+        <div class="gallery-thumbs" id="galleryThumbs"></div>
+      </div>
+      <div class="product-modal-side">
+        <div class="drawer-head-row" style="align-items:flex-start;">
+          <div>
+            <div class="section-label" id="modalCategory"></div>
+            <h3 id="modalTitle" style="margin:8px 0 0;font-size:40px;"></h3>
+          </div>
+          <button class="icon-btn" id="closeProductBtn">✕</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;margin-top:18px;">
+          <strong id="modalPrice" style="font-size:40px;"></strong>
+          <del id="modalOldPrice" style="color:rgba(255,255,255,.4);"></del>
+        </div>
+        <div class="muted" id="modalRating" style="margin-top:8px;"></div>
+        <p id="modalLongDesc" class="section-desc" style="max-width:none;margin-top:18px;"></p>
+        <div class="meta-split">
+          <div class="box"><div class="muted">Material</div><strong id="modalMaterial"></strong></div>
+          <div class="box"><div class="muted">Fit</div><strong id="modalFit"></strong></div>
+        </div>
+        <div class="size-box">
+          <h4>Selecciona tu talla</h4>
+          <div class="sizes" id="modalSizes"></div>
+        </div>
+        <div class="styles" id="modalStyles"></div>
+        <div class="product-actions">
+          <button class="btn-primary" id="modalAddCart">Agregar al carrito</button>
+          <button class="view-btn" id="modalFavBtn">Guardar favorito</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ai-widget">
+    <div class="ai-panel" id="aiPanel">
+      <div class="ai-head">
+        <div class="drawer-head-row">
+          <div>
+            <strong>Asistente IA</strong>
+            <div class="muted" style="font-size:12px;margin-top:4px;">Responde con prompt + metadata</div>
+          </div>
+          <button class="icon-btn" id="closeAiBtn">✕</button>
+        </div>
+      </div>
+      <div class="ai-body" id="aiMessages"></div>
+      <div class="ai-foot">
+        <div class="quick-row" id="quickRow"></div>
+        <div class="prompt-help">Ejemplo de prompt: <span style="color:#fff;">“Quiero un jean azul talla 32”</span> o <span style="color:#fff;">“Muéstrame una prenda elegante”</span></div>
+        <div class="ai-send">
+          <input id="aiInput" placeholder="Escribe tu pregunta..." />
+          <button class="btn-primary" id="sendAiBtn">Enviar</button>
+        </div>
+      </div>
+    </div>
+    <button class="ai-fab hidden" id="openAiFab">💬 Chat IA</button>
+  </div>
+
+  <script>
+    const heroSlides = [
+      { id: 1, title: 'Colección urbana con presencia', subtitle: 'Prendas modernas con estilo fuerte, visual premium y compra rápida.', image: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1600&q=80' },
+      { id: 2, title: 'Jeans, polos y outfits completos', subtitle: 'Explora tallas disponibles, favoritos y recomendaciones automáticas.', image: 'https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=1600&q=80' },
+      { id: 3, title: 'Compra asistida por IA', subtitle: 'El chatbot entiende el prompt del cliente y responde con contexto del producto.', image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1600&q=80' },
+    ];
+
+    const productsData = [
+      { id:1, name:'Chaqueta Urban Black', price:129, oldPrice:159, category:'Chaquetas', tag:'Nuevo', rating:4.9, isFeatured:true, image:'https://images.unsplash.com/photo-1523398002811-999ca8dec234?auto=format&fit=crop&w=1200&q=80', gallery:['https://images.unsplash.com/photo-1523398002811-999ca8dec234?auto=format&fit=crop&w=1200&q=80','https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1200&q=80','https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=1200&q=80'], description:'Diseño urbano premium con acabado moderno y corte elegante.', longDescription:'Una chaqueta moderna pensada para destacar en cualquier ocasión. Su estilo combina presencia, comodidad y un look urbano sofisticado.', sizes:['M','L','XL'], colors:['Negro','Grafito'], stockBySize:{M:5,L:4,XL:3}, metadata:{material:'Algodón premium + poliéster', fit:'Regular fit', season:'Otoño / Invierno', style:['urbano','premium','casual'], promptTags:['chaqueta negra','urbana','elegante','moderna']}},
+      { id:2, name:'Polo Oversize Beige', price:69, oldPrice:89, category:'Polos', tag:'Top venta', rating:4.8, isFeatured:true, image:'https://images.unsplash.com/photo-1516826957135-700dedea698c?auto=format&fit=crop&w=1200&q=80', gallery:['https://images.unsplash.com/photo-1516826957135-700dedea698c?auto=format&fit=crop&w=1200&q=80','https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=1200&q=80','https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1200&q=80'], description:'Comodidad total con estilo relajado para combinar en cualquier ocasión.', longDescription:'Polo oversize ideal para outfits casuales y modernos. Tela suave, caída amplia y visual contemporáneo para un look fresco.', sizes:['M','L','XL'], colors:['Beige','Arena','Crema'], stockBySize:{M:8,L:7,XL:5}, metadata:{material:'100% algodón', fit:'Oversize', season:'Todo el año', style:['casual','streetwear','relajado'], promptTags:['polo oversize','beige','street','suave']}},
+      { id:3, name:'Jean Slim Fit Blue', price:98, oldPrice:125, category:'Jeans', tag:'Exclusivo', rating:4.9, isFeatured:true, image:'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&w=1200&q=80', gallery:['https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&w=1200&q=80','https://images.unsplash.com/photo-1473966968600-fa801b869a1a?auto=format&fit=crop&w=1200&q=80','https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=1200&q=80'], description:'Jean moderno con caída perfecta y acabado versátil.', longDescription:'Jean slim fit con personalidad urbana. Ideal para combinar con polos, casacas y zapatillas modernas.', sizes:['28','30','32','34'], colors:['Azul','Azul oscuro'], stockBySize:{28:4,30:6,32:5,34:3}, metadata:{material:'Denim stretch', fit:'Slim fit', season:'Todo el año', style:['jean','urbano','versátil'], promptTags:['jean azul','slim fit','28 a 34','casual']}},
+      { id:4, name:'Sudadera Street Grey', price:115, oldPrice:139, category:'Hoodies', tag:'Trend', rating:4.7, isFeatured:false, image:'https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=1200&q=80', gallery:['https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=1200&q=80','https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1200&q=80','https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=1200&q=80'], description:'Abrigadora, moderna y pensada para un look casual premium.', longDescription:'Sudadera con estilo streetwear, perfecta para climas frescos y combinaciones con mucha presencia visual.', sizes:['M','L','XL'], colors:['Gris','Plomo'], stockBySize:{M:3,L:4,XL:2}, metadata:{material:'Franela premium', fit:'Regular', season:'Invierno', style:['streetwear','abrigador','casual'], promptTags:['sudadera','hoodie','gris','abrigador']}},
+      { id:5, name:'Camisa Minimal White', price:82, oldPrice:99, category:'Camisas', tag:'Elegante', rating:4.8, isFeatured:false, image:'https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=1200&q=80', gallery:['https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=1200&q=80','https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1200&q=80','https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1200&q=80'], description:'Línea limpia y sofisticada para elevar cualquier outfit.', longDescription:'Una camisa minimalista para quienes quieren un toque más fino, limpio y versátil en su estilo diario.', sizes:['M','L','XL'], colors:['Blanco'], stockBySize:{M:5,L:5,XL:4}, metadata:{material:'Popelina ligera', fit:'Slim casual', season:'Todo el año', style:['elegante','limpio','minimalista'], promptTags:['camisa blanca','elegante','minimal','formal casual']}},
+      { id:6, name:'Casaca Motion Brown', price:145, oldPrice:179, category:'Chaquetas', tag:'Premium', rating:4.9, isFeatured:true, image:'https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=1200&q=80', gallery:['https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=1200&q=80','https://images.unsplash.com/photo-1523398002811-999ca8dec234?auto=format&fit=crop&w=1200&q=80','https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1200&q=80'], description:'Prenda con presencia, textura visual y personalidad única.', longDescription:'Casaca premium con fuerza visual y diseño que aporta carácter. Perfecta para elevar un outfit completo.', sizes:['M','L','XL'], colors:['Brown','Marrón oscuro'], stockBySize:{M:2,L:3,XL:2}, metadata:{material:'Eco cuero premium', fit:'Structured', season:'Otoño / Invierno', style:['premium','fuerte','moderno'], promptTags:['casaca brown','premium','moderna','outfit fuerte']}},
+    ];
+
+    const categories = ['Todos','Chaquetas','Polos','Jeans','Hoodies','Camisas'];
+    const sortOptions = [
+      { id:'featured', name:'Destacados' },
+      { id:'price-low', name:'Precio: menor a mayor' },
+      { id:'price-high', name:'Precio: mayor a menor' },
+      { id:'rating', name:'Mejor valorados' },
+    ];
+    const paymentOptions = [
+      { id:'yape', name:'Yape', subtitle:'Pago rápido por celular', instructions:'Realiza el pago al número 999 999 999 y envía tu constancia por WhatsApp.' },
+      { id:'plin', name:'Plin', subtitle:'Transferencia inmediata', instructions:'Haz tu pago por Plin al número 988 888 888 y comparte tu captura.' },
+      { id:'transferencia', name:'Transferencia bancaria', subtitle:'BCP, Interbank o banca móvil', instructions:'Cuenta BCP: 191-0000000-0-00 | CCI: 00219100000000000000. Luego envíanos tu voucher.' },
+      { id:'contraentrega', name:'Contra entrega', subtitle:'Pagas al recibir tu pedido', instructions:'Tu pedido quedará registrado y pagarás cuando llegue a tu dirección.' },
+    ];
+    const quickQuestions = ['¿Qué tallas tienen en jeans?','¿Hacen envíos a provincia?','¿Cómo pago por Yape?','Quiero un outfit casual','Muéstrame polos talla L'];
+    const marqueeItems = ['ENVÍOS A TODO PERÚ','PAGO CON YAPE Y PLIN','CAMBIOS Y DEVOLUCIONES','NUEVAS LLEGADAS','COMPRA ASISTIDA POR IA','OFERTAS SEMANALES'];
+    const testimonials = [
+      { name:'Valeria Torres', city:'Lima, Perú', image:'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=80&q=80', text:'Definitivamente compro de nuevo, la calidad superó mis expectativas.' },
+      { name:'Rodrigo Mamani', city:'Arequipa, Perú', image:'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&w=80&q=80', text:'El jean slim fit es increíble, exactamente como en las fotos. El envío fue rápido y el empaque muy cuidado.' },
+      { name:'Camila Quispe', city:'Cusco, Perú', image:'https://images.unsplash.com/photo-1607746882042-944635dfe10e?auto=format&fit=crop&w=80&q=80', text:'Pedí la camisa blanca y quedé enamorada. La tela es suave, el corte es ideal y el precio está muy bien.' },
+    ];
+    const processSteps = [
+      { step:'01', title:'Explora el catálogo', desc:'Busca por categoría, estilo, talla o color usando el catálogo inteligente.' },
+      { step:'02', title:'Selecciona tu talla', desc:'Revisa stock por talla antes de agregar tu prenda al carrito.' },
+      { step:'03', title:'Confirma tu compra', desc:'Completa tus datos, elige tu método de pago y revisa el resumen.' },
+      { step:'04', title:'Recibe tu pedido', desc:'Coordinamos el envío rápido y te acompañamos hasta la entrega.' },
+    ];
+
+    const state = {
+      menuOpen: false,
+      cartOpen: false,
+      selectedCategory: 'Todos',
+      favorites: [],
+      cart: [],
+      checkoutOpen: false,
+      paymentResultOpen: false,
+      productModal: null,
+      selectedSizes: Object.fromEntries(productsData.map(p => [p.id, p.sizes[0] || ''])),
+      paymentMethod: 'yape',
+      heroIndex: 0,
+      search: '',
+      sortBy: 'featured',
+      orderSummary: '',
+      aiOpen: true,
+      aiMessages: [
+        { role: 'assistant', text: '¡Hola! Soy tu asistente de compra ✨ Puedo ayudarte con tallas, stock, métodos de pago, outfits y respuestas basadas en prompt + metadata.' }
+      ],
+      activeGallery: 0,
+    };
+
+    const $ = (id) => document.getElementById(id);
+    const formatCurrency = (value) => `S/ ${Number(value).toFixed(0)}`;
+    const currentPayment = () => paymentOptions.find(p => p.id === state.paymentMethod);
+    const cartCount = () => state.cart.reduce((a,b)=>a+b.qty,0);
+    const subtotal = () => state.cart.reduce((a,b)=>a+(b.price*b.qty),0);
+    const shipping = () => state.cart.length ? 15 : 0;
+    const total = () => subtotal()+shipping();
+    const discountOf = (p) => Math.max(0, Math.round(((p.oldPrice - p.price) / p.oldPrice) * 100));
+    const stockClass = (stock) => stock <= 0 ? 'out' : stock <= 2 ? 'low' : 'ok';
+
+    function buildAIReply(message) {
+      const text = String(message || '').toLowerCase();
+      const promptMetadata = productsData.map(p => ({
+        name: p.name, metadata: p.metadata, sizes: p.sizes, colors: p.colors, stockBySize: p.stockBySize, category: p.category
+      }));
+
+      if (text.includes('metadata')) {
+        return `Sí ✨ El chatbot ya está preparado para trabajar con prompt + metadata. Por ejemplo, puede leer categoría, precio, tallas, colores, fit, material y stock por talla. Metadata activa: ${promptMetadata.slice(0,2).map(p => `${p.name}: ${p.metadata.fit}, ${p.metadata.material}`).join(' | ')}.`;
+      }
+      if (text.includes('prompt')) {
+        return 'El chatbot puede responder por prompt entendiendo la intención del cliente. Ejemplo: si escriben “quiero un jean azul talla 32”, puede buscar dentro de los productos y devolver coincidencias usando metadata como categoría, tallas, color, estilo y stock.';
+      }
+      if (text.includes('jean') || text.includes('jeans') || text.includes('talla')) {
+        const jeans = productsData.find((p) => p.category === 'Jeans');
+        return `Claro ✨ En jeans manejamos tallas ${jeans.sizes.join(', ')}. Ahora mismo el modelo ${jeans.name} tiene stock en ${Object.entries(jeans.stockBySize).map(([size, qty]) => `${size} (${qty})`).join(', ')}.`;
+      }
+      if (text.includes('polo') && text.includes('l')) {
+        const polos = productsData.filter((p) => p.category === 'Polos');
+        return `Sí, tenemos polos talla L. Por ejemplo ${polos.map((p) => `${p.name} (${p.stockBySize.L ?? 0} disponibles)`).join(', ')}.`;
+      }
+      if (text.includes('casual') || text.includes('outfit')) {
+        return 'Te recomiendo este outfit casual: Polo Oversize Beige + Jean Slim Fit Blue + Chaqueta Urban Black. Combina muy bien para un look moderno, limpio y con presencia.';
+      }
+      if (text.includes('envío') || text.includes('provincia') || text.includes('delivery')) {
+        return 'Sí, hacemos envíos. En Lima puedes manejar envío rápido y para provincia se puede coordinar por agencia o courier. Al confirmar tu compra te indicamos el costo exacto según destino.';
+      }
+      if (text.includes('yape') || text.includes('pago') || text.includes('plin') || text.includes('transferencia')) {
+        return 'Puedes pagar con Yape, Plin, transferencia bancaria o contra entrega. Si eliges Yape o transferencia, al confirmar el pedido te mostramos las instrucciones para completar el pago.';
+      }
+      if (text.includes('hola') || text.includes('buenas')) {
+        return `¡Hola! 👋 Estoy para ayudarte con tallas, pagos, envíos y recomendaciones. Tengo ${productsData.length} productos cargados y puedo responder usando metadata de cada prenda.`;
+      }
+      return 'Te ayudo encantado 💬 Puedes preguntarme por tallas disponibles, stock, métodos de pago, envíos, recomendaciones de outfits o consultas por prompt como: jean azul talla 32, polo beige talla L o prenda elegante para salir.';
+    }
+
+    function getFilteredProducts() {
+      let items = [...productsData];
+      if (state.selectedCategory !== 'Todos') items = items.filter(p => p.category === state.selectedCategory);
+      if (state.search.trim()) {
+        const q = state.search.trim().toLowerCase();
+        items = items.filter(p => [
+          p.name, p.category, p.description, p.longDescription,
+          p.colors.join(' '), p.metadata.material, p.metadata.fit, p.metadata.season,
+          ...(p.metadata.style || []), ...(p.metadata.promptTags || [])
+        ].join(' ').toLowerCase().includes(q));
+      }
+      if (state.sortBy === 'price-low') items.sort((a,b)=>a.price-b.price);
+      if (state.sortBy === 'price-high') items.sort((a,b)=>b.price-a.price);
+      if (state.sortBy === 'rating') items.sort((a,b)=>b.rating-a.rating);
+      if (state.sortBy === 'featured') items.sort((a,b)=>Number(b.isFeatured)-Number(a.isFeatured));
+      return items;
+    }
+
+    function renderHero() {
+      $('heroSlides').innerHTML = heroSlides.map((slide, i) => `
+        <div class="hero-slide ${i===state.heroIndex?'active':''}">
+          <img src="${slide.image}" alt="${slide.title}">
+        </div>
+      `).join('');
+      $('heroTitle').textContent = heroSlides[state.heroIndex].title;
+      $('heroSubtitle').textContent = heroSlides[state.heroIndex].subtitle;
+      $('heroIndicators').innerHTML = heroSlides.map((_, i) => `<button class="hero-dot ${i===state.heroIndex?'active':''}" onclick="setHero(${i})"></button>`).join('');
+    }
+
+    function renderStaticBlocks() {
+      $('marqueeTrack').innerHTML = [...marqueeItems, ...marqueeItems].map(item => `<div>${item} ✦</div>`).join('');
+      const featured = productsData.filter(p => p.isFeatured).slice(0,3);
+      $('topSellers').innerHTML = featured.map(item => `
+        <div class="sell-item">
+          <img src="${item.image}" alt="${item.name}">
+          <div class="grow"><strong>${item.name}</strong><span>${item.category}</span></div>
+          <strong>${formatCurrency(item.price)}</strong>
+        </div>
+      `).join('');
+      $('testimonialGrid').innerHTML = testimonials.map(item => `
+        <div class="testimonial">
+          <div class="stars">★★★★★</div>
+          <p>“${item.text}”</p>
+          <div class="person">
+            <img src="${item.image}" alt="${item.name}">
+            <div><strong>${item.name}</strong><div class="muted" style="font-size:14px;margin-top:4px;">${item.city}</div></div>
+          </div>
+        </div>
+      `).join('');
+      $('processGrid').innerHTML = processSteps.map(item => `
+        <div class="step-box">
+          <div class="step-circle">${item.step}</div>
+          <h3 style="margin:0;font-size:22px;">${item.title}</h3>
+          <p class="section-desc" style="max-width:none;font-size:14px;">${item.desc}</p>
+        </div>
+      `).join('');
+      $('sortSelect').innerHTML = sortOptions.map(opt => `<option value="${opt.id}">${opt.name}</option>`).join('');
+      $('quickRow').innerHTML = quickQuestions.map(q => `<button onclick="askQuick(${JSON.stringify(q)})">${q}</button>`).join('');
+    }
+
+    function renderCategories() {
+      $('categoryRow').innerHTML = categories.map(cat => `
+        <button class="chip ${cat===state.selectedCategory?'active':''}" onclick="setCategory(${JSON.stringify(cat)})">${cat}</button>
+      `).join('');
+    }
+
+    function renderProducts() {
+      const products = getFilteredProducts();
+      $('productCount').textContent = products.length;
+      $('productsGrid').innerHTML = products.map(product => {
+        const selectedSize = state.selectedSizes[product.id] || product.sizes[0];
+        const selectedStock = product.stockBySize[selectedSize] ?? 0;
+        return `
+          <div class="product-card">
+            <div class="product-image-wrap">
+              <img src="${product.image}" alt="${product.name}">
+              <div class="tag-row">
+                <span>${product.tag}</span>
+                ${discountOf(product) > 0 ? `<span class="discount">-${discountOf(product)}%</span>` : ''}
+              </div>
+              <button class="fav-btn ${state.favorites.includes(product.id)?'active':''}" onclick="toggleFavorite(${product.id})">♥</button>
+              <div class="product-overlay">
+                <div>
+                  <p>${product.category}</p>
+                  <h3>${product.name}</h3>
+                </div>
+                <div class="product-price-box">
+                  <del>${formatCurrency(product.oldPrice)}</del>
+                  <strong>${formatCurrency(product.price)}</strong>
+                </div>
+              </div>
+            </div>
+            <div class="product-body">
+              <div class="product-meta">
+                <div>⭐ ${product.rating}</div>
+                <div>📦 ${product.colors.join(', ')}</div>
+              </div>
+              <div class="product-desc">${product.description}</div>
+              <div class="size-box">
+                <h4>📏 Tallas disponibles</h4>
+                <div class="sizes">
+                  ${product.sizes.map(size => `
+                    <button class="size ${stockClass(product.stockBySize[size] ?? 0)} ${selectedSize===size?'active':''}" onclick="selectSize(${product.id}, ${JSON.stringify(size)})">${size}</button>
+                  `).join('')}
+                </div>
+                <div class="stock-label">Stock en talla <strong style="color:#fff;">${selectedSize}</strong>: ${selectedStock}</div>
+              </div>
+              <div class="styles">${product.metadata.style.map(style => `<span>${style}</span>`).join('')}</div>
+              <div class="product-actions">
+                <button class="btn-primary" style="flex:1;" onclick="addToCart(${product.id})">Agregar al carrito</button>
+                <button class="view-btn" onclick="openProduct(${product.id})">Ver más</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderCart() {
+      const count = cartCount();
+      $('cartBadge').textContent = count;
+      $('cartBadge').classList.toggle('hidden', count === 0);
+      $('cartCountText').textContent = `${count} producto(s) agregados`;
+      $('subtotalText').textContent = formatCurrency(subtotal());
+      $('shippingText').textContent = formatCurrency(shipping());
+      $('totalText').textContent = formatCurrency(total());
+      $('checkoutSubtotal').textContent = formatCurrency(subtotal());
+      $('checkoutShipping').textContent = formatCurrency(shipping());
+      $('checkoutTotal').textContent = formatCurrency(total());
+
+      if (!state.cart.length) {
+        $('cartItems').innerHTML = `<div class="empty-cart"><div style="font-size:48px;">👜</div><h3>Tu carrito está vacío</h3><p class="muted">Agrega prendas y empieza a construir tu compra.</p></div>`;
+        $('checkoutSummaryItems').innerHTML = `<div class="muted">Aún no hay productos seleccionados.</div>`;
+        return;
+      }
+
+      $('cartItems').innerHTML = state.cart.map(item => `
+        <div class="cart-item">
+          <img src="${item.image}" alt="${item.name}">
+          <div class="cart-main">
+            <div class="cart-top">
+              <div>
+                <h4>${item.name}</h4>
+                <div class="muted" style="font-size:14px;margin-top:4px;">${item.category} · Talla ${item.size}</div>
+              </div>
+              <button class="view-btn" style="padding:6px 10px;" onclick="removeCartItem(${item.id}, ${JSON.stringify(item.size)})">🗑</button>
+            </div>
+            <div style="margin-top:8px;font-weight:700;">${formatCurrency(item.price)}</div>
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:16px;">
+              <div class="qty-wrap">
+                <button onclick="decreaseQty(${item.id}, ${JSON.stringify(item.size)})">−</button>
+                <span>${item.qty}</span>
+                <button onclick="increaseQty(${item.id}, ${JSON.stringify(item.size)})">+</button>
+              </div>
+              <strong style="font-size:22px;">${formatCurrency(item.price * item.qty)}</strong>
+            </div>
+          </div>
+        </div>
+      `).join('') + renderPaymentResult();
+
+      $('checkoutSummaryItems').innerHTML = state.cart.map(item => `
+        <div class="payment-box" style="display:flex;justify-content:space-between;gap:12px;align-items:center;">
+          <div><strong>${item.name}</strong><div class="muted" style="font-size:14px;margin-top:4px;">Talla: ${item.size} · Cantidad: ${item.qty}</div></div>
+          <strong>${formatCurrency(item.price * item.qty)}</strong>
+        </div>
+      `).join('');
+    }
+
+    function renderPaymentResult() {
+      if (!state.paymentResultOpen || !state.orderSummary) return '';
+      const payment = currentPayment();
+      const wa = `https://wa.me/51999999999?text=${encodeURIComponent(state.orderSummary || 'Hola, deseo información sobre mi compra')}`;
+      return `
+        <div class="summary-box" style="border-color:rgba(16,185,129,.2);background:rgba(16,185,129,.1);">
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <div>✅</div>
+            <div>
+              <strong style="color:#bbf7d0;">Pedido generado correctamente</strong>
+              <div style="margin-top:6px;color:rgba(255,255,255,.8);font-size:14px;">Ahora sí se muestra el resumen y las instrucciones del pago elegido.</div>
+            </div>
+          </div>
+          <div class="summary-box" style="margin-top:16px;"><pre>${state.orderSummary}</pre></div>
+          <div class="payment-box" style="margin-top:16px;">
+            <div class="muted" style="font-size:14px;font-weight:700;">Método elegido</div>
+            <div style="margin-top:8px;font-size:22px;font-weight:900;">${payment.name}</div>
+            <div style="margin-top:10px;color:rgba(255,255,255,.7);line-height:1.7;">${payment.instructions}</div>
+          </div>
+          <a href="${wa}" target="_blank" rel="noreferrer" class="btn-primary" style="display:block;text-align:center;margin-top:16px;">Enviar pedido por WhatsApp</a>
+        </div>
+      `;
+    }
+
+    function renderCheckoutPayments() {
+      $('paymentGrid').innerHTML = paymentOptions.map(opt => `
+        <button class="payment-option ${state.paymentMethod===opt.id?'active':''}" onclick="selectPayment(${JSON.stringify(opt.id)})">
+          <strong>${opt.name}</strong>
+          <small>${opt.subtitle}</small>
+        </button>
+      `).join('');
+    }
+
+    function renderAiMessages() {
+      $('aiMessages').innerHTML = state.aiMessages.map(msg => `
+        <div class="msg ${msg.role==='user'?'user':'bot'}"><div class="bubble">${msg.text}</div></div>
+      `).join('');
+      $('aiMessages').scrollTop = $('aiMessages').scrollHeight;
+    }
+
+    function renderProductModal() {
+      const product = state.productModal;
+      if (!product) return;
+      $('modalMainImage').src = product.gallery[state.activeGallery] || product.image;
+      $('modalCategory').textContent = product.category;
+      $('modalTitle').textContent = product.name;
+      $('modalPrice').textContent = formatCurrency(product.price);
+      $('modalOldPrice').textContent = formatCurrency(product.oldPrice);
+      $('modalRating').textContent = `⭐ ${product.rating} valoración`;
+      $('modalLongDesc').textContent = product.longDescription;
+      $('modalMaterial').textContent = product.metadata.material;
+      $('modalFit').textContent = product.metadata.fit;
+      $('galleryThumbs').innerHTML = product.gallery.map((img, idx) => `
+        <button class="${idx===state.activeGallery?'active':''}" onclick="setGallery(${idx})"><img src="${img}" alt="${product.name} ${idx+1}"></button>
+      `).join('');
+      const selected = state.selectedSizes[product.id] || product.sizes[0];
+      $('modalSizes').innerHTML = product.sizes.map(size => `
+        <button class="size ${stockClass(product.stockBySize[size] ?? 0)} ${selected===size?'active':''}" onclick="selectSize(${product.id}, ${JSON.stringify(size)}, true)">${size} · ${product.stockBySize[size] ?? 0}</button>
+      `).join('');
+      $('modalStyles').innerHTML = product.metadata.style.map(style => `<span>${style}</span>`).join('');
+      $('modalFavBtn').textContent = state.favorites.includes(product.id) ? 'Quitar favorito' : 'Guardar favorito';
+    }
+
+    function openOverlay() { $('overlay').classList.add('show'); }
+    function closeOverlay() {
+      if (!state.cartOpen && !state.checkoutOpen && !state.productModal) $('overlay').classList.remove('show');
+    }
+
+    function openCart() { state.cartOpen = true; $('cartDrawer').classList.add('open'); openOverlay(); }
+    function closeCart() { state.cartOpen = false; $('cartDrawer').classList.remove('open'); closeOverlay(); }
+    function openCheckout() {
+      if (!state.cart.length) return alert('Tu carrito está vacío');
+      state.checkoutOpen = true; $('checkoutModal').classList.add('show'); openOverlay(); renderCheckoutPayments(); renderCart();
+    }
+    function closeCheckout() { state.checkoutOpen = false; $('checkoutModal').classList.remove('show'); closeOverlay(); }
+    function openProduct(id) { state.productModal = productsData.find(p => p.id === id); state.activeGallery = 0; $('productModal').classList.add('show'); openOverlay(); renderProductModal(); }
+    function closeProduct() { state.productModal = null; $('productModal').classList.remove('show'); closeOverlay(); }
+    function setGallery(idx) { state.activeGallery = idx; renderProductModal(); }
+
+    function setHero(idx) { state.heroIndex = idx; renderHero(); }
+    function nextHero() { state.heroIndex = (state.heroIndex + 1) % heroSlides.length; renderHero(); }
+    function prevHero() { state.heroIndex = (state.heroIndex - 1 + heroSlides.length) % heroSlides.length; renderHero(); }
+
+    function setCategory(cat) { state.selectedCategory = cat; renderCategories(); renderProducts(); }
+    function selectPayment(id) { state.paymentMethod = id; renderCheckoutPayments(); }
+    function toggleFavorite(id) {
+      if (state.favorites.includes(id)) state.favorites = state.favorites.filter(x => x !== id);
+      else state.favorites.push(id);
+      renderProducts(); if (state.productModal?.id === id) renderProductModal();
+    }
+    function selectSize(productId, size, fromModal = false) {
+      state.selectedSizes[productId] = size;
+      renderProducts();
+      if (fromModal && state.productModal?.id === productId) renderProductModal();
+    }
+
+    function addToCart(productId) {
+      const product = productsData.find(p => p.id === productId);
+      const chosenSize = state.selectedSizes[product.id] || product.sizes[0];
+      const stock = product.stockBySize[chosenSize] ?? 0;
+      if (stock <= 0) return alert(`La talla ${chosenSize} no tiene stock disponible`);
+      const existing = state.cart.find(item => item.id === product.id && item.size === chosenSize);
+      if (existing) {
+        if (existing.qty + 1 > stock) return alert(`Solo hay ${stock} unidad(es) disponibles en talla ${chosenSize}`);
+        existing.qty += 1;
+      } else {
+        state.cart.push({ ...product, size: chosenSize, qty: 1 });
+      }
+      renderCart(); openCart();
+    }
+
+    function increaseQty(id, size) {
+      const item = state.cart.find(x => x.id === id && x.size === size);
+      if (!item) return;
+      const stock = item.stockBySize[item.size] ?? 0;
+      if (item.qty + 1 > stock) return;
+      item.qty += 1; renderCart();
+    }
+    function decreaseQty(id, size) {
+      const item = state.cart.find(x => x.id === id && x.size === size);
+      if (!item) return;
+      item.qty -= 1;
+      state.cart = state.cart.filter(x => x.qty > 0);
+      renderCart();
+    }
+    function removeCartItem(id, size) { state.cart = state.cart.filter(x => !(x.id === id && x.size === size)); renderCart(); }
+
+    function confirmOrder() {
+      const name = $('customerName').value.trim();
+      const phone = $('customerPhone').value.trim();
+      const address = $('customerAddress').value.trim();
+      if (!name || !phone || !address) return alert('Completa tu nombre, celular y dirección');
+      const payment = currentPayment();
+      const detailLines = state.cart.map(item => `• ${item.name} | Talla ${item.size} | x${item.qty} - ${formatCurrency(item.price * item.qty)}`).join('\n');
+      state.orderSummary = [
+        'Hola, quiero finalizar mi compra:', '',
+        `Cliente: ${name}`,
+        `Celular: ${phone}`,
+        `Dirección: ${address}`,
+        `Método de pago: ${payment.name}`,
+        '', detailLines, '',
+        `Subtotal: ${formatCurrency(subtotal())}`,
+        `Envío: ${formatCurrency(shipping())}`,
+        `Total: ${formatCurrency(total())}`,
+      ].join('\n');
+      state.paymentResultOpen = true;
+      closeCheckout(); renderCart(); openCart();
+    }
+
+    function askQuick(text) {
+      state.aiMessages.push({ role:'user', text });
+      renderAiMessages();
+      setTimeout(() => {
+        state.aiMessages.push({ role:'assistant', text: buildAIReply(text) });
+        renderAiMessages();
+      }, 500);
+    }
+    function sendAi() {
+      const input = $('aiInput');
+      const text = input.value.trim();
+      if (!text) return;
+      input.value = '';
+      askQuick(text);
+    }
+    function closeAi() { state.aiOpen = false; $('aiPanel').classList.add('hidden'); $('openAiFab').classList.remove('hidden'); }
+    function openAi() { state.aiOpen = true; $('aiPanel').classList.remove('hidden'); $('openAiFab').classList.add('hidden'); }
+
+    function initEvents() {
+      $('menuBtn').addEventListener('click', () => $('mobileMenu').classList.toggle('open'));
+      $('openCartBtn').addEventListener('click', openCart);
+      $('closeCartBtn').addEventListener('click', closeCart);
+      $('checkoutBtn').addEventListener('click', openCheckout);
+      $('closeCheckoutBtn').addEventListener('click', closeCheckout);
+      $('confirmOrderBtn').addEventListener('click', confirmOrder);
+      $('closeProductBtn').addEventListener('click', closeProduct);
+      $('overlay').addEventListener('click', () => { closeCart(); closeCheckout(); closeProduct(); });
+      $('modalAddCart').addEventListener('click', () => { if (state.productModal) { addToCart(state.productModal.id); closeProduct(); } });
+      $('modalFavBtn').addEventListener('click', () => { if (state.productModal) toggleFavorite(state.productModal.id); });
+      $('heroPrev').addEventListener('click', prevHero);
+      $('heroNext').addEventListener('click', nextHero);
+      $('searchInput').addEventListener('input', (e) => { state.search = e.target.value; renderProducts(); });
+      $('sortSelect').addEventListener('change', (e) => { state.sortBy = e.target.value; renderProducts(); });
+      $('sendAiBtn').addEventListener('click', sendAi);
+      $('aiInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') sendAi(); });
+      $('closeAiBtn').addEventListener('click', closeAi);
+      $('openAiFab').addEventListener('click', openAi);
+      $('openAiBtn').addEventListener('click', openAi);
+      document.querySelectorAll('.mobile-menu a').forEach(a => a.addEventListener('click', () => $('mobileMenu').classList.remove('open')));
+      setInterval(nextHero, 5000);
+    }
+
+    function init() {
+      renderHero();
+      renderStaticBlocks();
+      renderCategories();
+      renderProducts();
+      renderCart();
+      renderCheckoutPayments();
+      renderAiMessages();
+      initEvents();
+    }
+
+    window.setHero = setHero;
+    window.setCategory = setCategory;
+    window.selectSize = selectSize;
+    window.addToCart = addToCart;
+    window.toggleFavorite = toggleFavorite;
+    window.openProduct = openProduct;
+    window.removeCartItem = removeCartItem;
+    window.increaseQty = increaseQty;
+    window.decreaseQty = decreaseQty;
+    window.selectPayment = selectPayment;
+    window.askQuick = askQuick;
+    window.setGallery = setGallery;
+
+    init();
+  </script>
+</body>
+</html>
