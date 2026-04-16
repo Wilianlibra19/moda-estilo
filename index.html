@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <title>Moda & Estilos</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/framer-motion/10.16.4/framer-motion.umd.min.js"></script>
 <style>
@@ -28,6 +28,8 @@
   }
   html { scroll-behavior: smooth; }
   body {
+    width: 100%;
+    max-width: 100%;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     background:
       radial-gradient(circle at top left, rgba(99,102,241,0.14), transparent 32%),
@@ -578,12 +580,18 @@
     display: flex; flex-direction: column; align-items: flex-end; gap: 12px;
   }
   .ai-bubble {
-    width: 340px; background: rgba(255,255,255,0.95); border: 1px solid rgba(255,255,255,0.94); border-radius: 24px;
+    width: 320px; max-height: 70vh;
+    background: rgba(255,255,255,0.95); border: 1px solid rgba(255,255,255,0.94); border-radius: 22px;
     overflow: hidden; box-shadow: 0 20px 60px rgba(15,23,42,0.16);
-    transform: translateY(10px) scale(0.98); opacity: 0;
-    transition: all 0.3s cubic-bezier(0.22,1,0.36,1);
+    transform: translateY(20px) scale(0.95); opacity: 0;
+    transition: all 0.25s ease;
     pointer-events: none;
     backdrop-filter: blur(16px);
+  }
+  .ai-bubble.open {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+    pointer-events: all;
   }
   .ai-bubble.open { transform: translateY(0) scale(1); opacity: 1; pointer-events: all; }
   .ai-head {
@@ -612,10 +620,12 @@
   .ai-send { width: 38px; height: 38px; border-radius: 12px; background: white; color: black; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; }
   .ai-toggle {
     display: flex; align-items: center; gap: 8px;
-    padding: 12px 20px; border-radius: 100px;
+    padding: 12px 18px; border-radius: 100px;
     background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: white; font-weight: 700; font-size: 14px;
     border: none; cursor: pointer; box-shadow: 0 14px 30px rgba(99,102,241,0.22);
+    transition: transform 0.2s;
   }
+  .ai-toggle:hover { transform: scale(1.05); }
 
   /* ANIMATIONS */
   @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
@@ -628,7 +638,28 @@
   .observe-fade.visible { opacity: 1; transform: translateY(0); }
 
   @media(max-width:900px){
+    html, body { overflow-x: hidden; }
+    nav { padding: 0 1rem; }
     .nav-links { display: none; }
+    .hero-content { grid-template-columns: 1fr; gap: 2rem; padding: 3rem 1rem; }
+    .hero-images { height: 320px; width: 100%; }
+    .hero-img-main { left: 0; width: 58%; height: 82%; }
+    .hero-img-secondary { right: 0; width: 48%; height: 68%; }
+    .hero-img-tag { left: 8px; max-width: calc(100% - 16px); white-space: normal; }
+    .products-grid { grid-template-columns: 1fr 1fr; }
+    #nosotros .grid-2 { grid-template-columns: 1fr; }
+    .benefits-grid { grid-template-columns: 1fr 1fr; }
+    .testimonials { grid-template-columns: 1fr; }
+    .process-steps { grid-template-columns: 1fr 1fr; }
+    .process-steps::before { display: none; }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+    .banner { grid-template-columns: 1fr; }
+    .banner-img-wrap { height: 220px; }
+    .modal-grid { grid-template-columns: 1fr; }
+    .product-modal { grid-template-columns: 1fr; }
+    .pm-img { height: 260px; }
+    .form-row { grid-template-columns: 1fr; }
+  }
     .hero-content { grid-template-columns: 1fr; }
     .hero-images { height: 280px; }
     .products-grid { grid-template-columns: 1fr 1fr; }
@@ -644,7 +675,136 @@
     .pm-img { height: 260px; }
   }
   @media(max-width:600px){
-    .products-grid { grid-template-columns: 1fr; }
+    html, body { overflow-x: hidden; }
+    nav {
+      padding: 0 12px;
+      height: 64px;
+      gap: 10px;
+    }
+    .nav-logo { min-width: 0; gap: 10px; }
+    .nav-logo-icon { width: 36px; height: 36px; font-size: 11px; border-radius: 12px; flex-shrink: 0; }
+    .nav-brand { font-size: 13px; letter-spacing: 0.08em; line-height: 1.1; }
+    .nav-sub { font-size: 10px; line-height: 1.1; }
+    .nav-actions { gap: 8px; flex-shrink: 0; }
+    .btn-icon { width: 38px; height: 38px; border-radius: 12px; }
+
+    section { padding: 4.2rem 0; }
+    .container { padding: 0 1rem; }
+    #hero { padding-top: 72px; min-height: auto; }
+    .hero-content { padding: 2.2rem 1rem 3rem; gap: 1.5rem; }
+    .hero-title { font-size: clamp(2.2rem, 10vw, 3rem); line-height: 1.02; }
+    .hero-desc { font-size: 15px; max-width: 100%; }
+    .hero-ctas { flex-direction: column; width: 100%; }
+    .hero-ctas .btn-primary,
+    .hero-ctas .btn-secondary { width: 100%; text-align: center; }
+    .hero-stats { gap: 1rem; justify-content: space-between; flex-wrap: wrap; }
+    .hero-stat-val { font-size: 1.4rem; }
+    .hero-images {
+      height: 260px;
+      max-width: 100%;
+      overflow: hidden;
+    }
+    .hero-img-main {
+      left: 0;
+      width: 60%;
+      height: 78%;
+      border-width: 4px;
+    }
+    .hero-img-secondary {
+      right: 0;
+      width: 48%;
+      height: 62%;
+      border-width: 4px;
+    }
+    .hero-img-tag {
+      left: 6px;
+      right: 6px;
+      top: auto;
+      bottom: 8px;
+      transform: none;
+      max-width: none;
+      font-size: 11px;
+      padding: 10px 12px;
+    }
+
+    .marquee-wrap { padding: 10px 0; }
+    .marquee-item { font-size: 10px; letter-spacing: 0.18em; }
+
+    .section-title { font-size: clamp(1.7rem, 8vw, 2.2rem); }
+    .section-desc { font-size: 14px; max-width: 100%; }
+
+    .products-grid { grid-template-columns: 1fr; gap: 1rem; }
+    .product-card { border-radius: 22px; }
+    .product-img-wrap { height: 260px; }
+    .product-body { padding: 1rem; }
+    .product-row { gap: 10px; align-items: flex-start; }
+    .product-name { font-size: 16px; line-height: 1.3; }
+    .product-price { font-size: 16px; }
+    .product-actions { flex-direction: column; }
+    .btn-cart, .btn-view { width: 100%; justify-content: center; }
+    .sizes { gap: 6px; }
+    .size-btn { padding: 7px 10px; font-size: 11px; }
+
+    .banner { border-radius: 22px; }
+    .banner-content { padding: 1.3rem; }
+    .banner-title { font-size: 1.8rem; }
+    .banner-desc { font-size: 13px; }
+    .banner-content > div[style*="display:flex"] { flex-direction: column; }
+    .banner-content .btn-primary,
+    .banner-content .form-input { width: 100%; }
+    .banner-img-wrap { height: 190px; }
+
+    .benefits-grid { grid-template-columns: 1fr; gap: 1rem; }
+    .process-steps { grid-template-columns: 1fr; gap: 1.2rem; }
+    #contacto .grid-2 { grid-template-columns: 1fr; }
+    .about-grid { grid-template-columns: 1fr; }
+    .about-card, .contact-info, .contact-form { padding: 1.2rem; }
+    .testimonials { gap: 1rem; }
+
+    .footer-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+    .footer-bottom {
+      flex-direction: column;
+      gap: 8px;
+      text-align: center;
+    }
+
+    .cart-drawer { width: 100%; max-width: 100%; }
+    .drawer-head, .drawer-foot { padding: 1rem; }
+    .drawer-body { padding: 1rem; }
+    .cart-item { gap: 10px; padding: 12px; }
+    .cart-item-img { width: 64px; height: 76px; }
+
+    .modal-overlay { padding: 10px; }
+    .modal {
+      max-width: 100%;
+      width: 100%;
+      padding: 1rem;
+      border-radius: 20px;
+      max-height: 92vh;
+    }
+    .modal-head { gap: 10px; }
+    .modal-head h3 { font-size: 18px !important; }
+    .pay-methods { grid-template-columns: 1fr; }
+
+    .product-modal-overlay { padding: 10px; }
+    .product-modal {
+      width: 100%;
+      max-width: 100%;
+      max-height: 92vh;
+      border-radius: 20px;
+    }
+    .pm-img { height: 240px; }
+    .pm-body { padding: 1rem; }
+
+    .ai-widget {
+      right: 0.75rem;
+      left: 0.75rem;
+      bottom: 0.75rem;
+      align-items: stretch;
+    }
+    .ai-bubble { width: 100%; max-width: 100%; }
+    .ai-toggle { width: fit-content; align-self: flex-end; }
+  }
     .benefits-grid { grid-template-columns: 1fr; }
     .process-steps { grid-template-columns: 1fr; }
     #contacto .grid-2 { grid-template-columns: 1fr; }
@@ -653,7 +813,7 @@
   }
 </style>
 </head>
-<body>
+<body style="overflow-x:hidden;">
 <div style="position:fixed;inset:0;pointer-events:none;z-index:-1;overflow:hidden;">
   <div style="position:absolute;top:6%;left:-80px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle, rgba(99,102,241,0.18), transparent 70%);"></div>
   <div style="position:absolute;top:24%;right:-80px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle, rgba(236,72,153,0.16), transparent 70%);"></div>
@@ -1001,7 +1161,7 @@ let cart = [], favorites = [], selectedCategory = "Todos";
 let selectedSizes = {};
 products.forEach(p => selectedSizes[p.id] = p.sizes[0]);
 let selectedPayment = "yape";
-let aiOpen = true;
+let aiOpen = false;
 let aiMessages = [{ role:"bot", text:"¡Hola! 👋 Soy tu asistente ✨ Pregúntame por tallas, pagos, envíos o recomendaciones." }];
 
 function fmt(v) { return "S/ " + Math.round(v); }
@@ -1311,8 +1471,8 @@ document.addEventListener('DOMContentLoaded', () => {
   updateCartUI();
   updateFavBadge();
   renderAI();
-  document.getElementById('ai-bubble').classList.add('open');
-  document.getElementById('ai-toggle-btn').style.display = 'none';
+  
+  document.getElementById('ai-toggle-btn').style.display = 'flex';
   observeAll();
 });
 </script>
